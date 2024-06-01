@@ -732,6 +732,23 @@
     [command send];
 }
 
+- (void)getLaunchPoints:(AppInfoSuccessBlock)success failure:(FailureBlock)failure
+{
+    NSURL *URL = [NSURL URLWithString:@"ssap://com.webos.applicationManager/listLaunchPoints"];
+
+    ServiceCommand *command = [ServiceCommand commandWithDelegate:self.socket target:URL payload:nil];
+    command.callbackComplete = ^(NSDictionary *responseObject)
+    {
+        NSArray *launchPoints = [responseObject objectForKey:@"launchPoints"];
+        printf("launchPoints");
+        printf("%s", launchPoints.firstObject);
+        if (success)
+            success(launchPoints);
+    };
+    command.callbackError = failure;
+    [command send];
+}
+
 - (void)getAppState:(LaunchSession *)launchSession success:(AppStateSuccessBlock)success failure:(FailureBlock)failure
 {
     NSURL *URL = [NSURL URLWithString:@"ssap://system.launcher/getAppState"];
@@ -1526,23 +1543,25 @@
 
 - (void)okWithSuccess:(SuccessBlock)success failure:(FailureBlock)failure
 {
-    if (self.mouseSocket)
-    {
-        [self.mouseSocket click];
-
-        if (success)
-            success(nil);
-    } else
-    {
-        [self.mouseControl connectMouseWithSuccess:^(id responseObject)
-        {
-            [self.mouseSocket click];
-
-            if (success)
-                success(nil);
-        } failure:failure];
-    }
+    [self sendMouseButton:WebOSTVMouseButtonEnter success:success failure:failure];
+//    if (self.mouseSocket)
+//    {
+//        [self.mouseSocket click];
+//
+//        if (success)
+//            success(nil);
+//    } else
+//    {
+//        [self.mouseControl connectMouseWithSuccess:^(id responseObject)
+//        {
+//            [self.mouseSocket click];
+//
+//            if (success)
+//                success(nil);
+//        } failure:failure];z
+//    }
 }
+
 
 - (void)backWithSuccess:(SuccessBlock)success failure:(FailureBlock)failure
 {
@@ -1553,6 +1572,12 @@
 {
     [self sendMouseButton:WebOSTVMouseButtonHome success:success failure:failure];
 }
+
+- (void)menuWithSuccess:(SuccessBlock)success failure:(FailureBlock)failure
+{
+    [self sendMouseButton:WebOSTVMouseButtonMenu success:success failure:failure];
+}
+
 
 - (void)sendKeyCode:(NSUInteger)keyCode success:(SuccessBlock)success failure:(FailureBlock)failure
 {
