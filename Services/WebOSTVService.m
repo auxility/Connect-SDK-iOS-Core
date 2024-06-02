@@ -2214,7 +2214,9 @@
     {
         _keyboardQueueProcessing = NO;
 
-        if (_keyboardQueue.count > 0)
+        self->_keyboardQueueProcessing = NO;
+
+        if (self->_keyboardQueue.count > 0)
             [self sendKeys];
     };
     [command send];
