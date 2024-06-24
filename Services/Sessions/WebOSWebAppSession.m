@@ -780,23 +780,23 @@ static NSString *const kSubtitleTrackIdentifier = @"0";
 
 - (void)playNextWithSuccess:(SuccessBlock)success failure:(FailureBlock)failure {
     NSMutableDictionary *mediaCommand = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                        @"type" : @"playNext"
-                                                                                        }];
+        @"type" : @"playNext"
+    }];
     [self sendMediaCommand:mediaCommand success:success failure:failure];
 }
 
 - (void)playPreviousWithSuccess:(SuccessBlock)success failure:(FailureBlock)failure{
     NSMutableDictionary *mediaCommand = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                        @"type" : @"playPrevious"
-                                                                                        }];
+        @"type" : @"playPrevious"
+    }];
     [self sendMediaCommand:mediaCommand success:success failure:failure];
 }
 
 - (void)jumpToTrackWithIndex:(NSInteger)index success:(SuccessBlock)success failure:(FailureBlock)failure{
     NSMutableDictionary *mediaCommand = [NSMutableDictionary dictionaryWithDictionary:@{
-                                                                                        @"type" : @"jumpToTrack",
-                                                                                        @"index" : [NSNumber numberWithInteger:index]
-                                                                                        }];
+        @"type" : @"jumpToTrack",
+        @"index" : [NSNumber numberWithInteger:index]
+    }];
     [self sendMediaCommand:mediaCommand success:success failure:failure];
 }
 
@@ -804,7 +804,7 @@ static NSString *const kSubtitleTrackIdentifier = @"0";
     int requestIdNumber = [self getNextId];
     NSString *requestId = [NSString stringWithFormat:@"req%d", requestIdNumber];
     [mediaCommand setObject:requestId forKey:@"requestId"];
-     NSDictionary *message = [self messageForMediaCommand:mediaCommand];
+    NSDictionary *message = [self messageForMediaCommand:mediaCommand];
     ServiceCommand *command = [ServiceCommand commandWithDelegate:nil target:nil payload:nil];
     command.callbackComplete = ^(id responseObject)
     {
@@ -819,9 +819,9 @@ static NSString *const kSubtitleTrackIdentifier = @"0";
 
 - (NSDictionary *)messageForMediaCommand:(NSDictionary *)mediaCommand {
     NSDictionary *message = @{
-                              @"contentType" : @"connectsdk.mediaCommand",
-                              @"mediaCommand" : mediaCommand
-                              };
+        @"contentType" : @"connectsdk.mediaCommand",
+        @"mediaCommand" : mediaCommand
+    };
     return message;
 }
 

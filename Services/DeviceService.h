@@ -165,6 +165,8 @@ typedef enum {
  */
 - (void) connect;
 
+- (void) sendPairingKey:(NSString *)pairingKey success:(SuccessBlock)success failure:(FailureBlock)failure;
+
 /*!
  * Will attempt to disconnect from the DeviceService. The failure/success will be reported back to the DeviceServiceDelegate.
  */

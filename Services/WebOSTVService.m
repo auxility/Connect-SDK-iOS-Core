@@ -43,13 +43,13 @@
     NSMutableDictionary *_appToAppIdMappings;
 
     NSTimer *_pairingTimer;
-    UIAlertView *_pairingAlert;
+//    UIAlertView *_pairingAlert;
 
     NSMutableArray *_keyboardQueue;
     BOOL _keyboardQueueProcessing;
 
     BOOL _mouseInit;
-    UIAlertView *_pinAlertView;
+//    UIAlertView *_pinAlertView;
     
     __weak id<RemoteCameraControlDelegate> _remoteCameraDelegate;
     __weak id<ScreenMirroringControlDelegate> _screenMirroringDelegate;
@@ -328,62 +328,64 @@
 
 #pragma mark - Paring alert
 
--(void) showAlert
-{
-    NSString *title = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Title" value:@"Pairing with device" table:@"ConnectSDK"];
-    NSString *message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request" value:@"Please confirm the connection on your device" table:@"ConnectSDK"];
-    NSString *ok = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_OK" value:@"OK" table:@"ConnectSDK"];
-    NSString *cancel = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Cancel" value:@"Cancel" table:@"ConnectSDK"];
-    
-    _pairingAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancel otherButtonTitles:ok, nil];
-    if(self.pairingType == DeviceServicePairingTypePinCode || self.pairingType == DeviceServicePairingTypeMixed){
-        _pairingAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
-        _pairingAlert.message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request_Pin" value:@"Please enter the pin code" table:@"ConnectSDK"];
-    }
-    dispatch_on_main(^{ [_pairingAlert show]; });
-}
+//-(void) showAlert
+//{
+//    NSString *title = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Title" value:@"Pairing with device" table:@"ConnectSDK"];
+//    NSString *message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request" value:@"Please confirm the connection on your device" table:@"ConnectSDK"];
+//    NSString *ok = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_OK" value:@"OK" table:@"ConnectSDK"];
+//    NSString *cancel = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Cancel" value:@"Cancel" table:@"ConnectSDK"];
+//    
+//    _pairingAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancel otherButtonTitles:ok, nil];
+//    if(self.pairingType == DeviceServicePairingTypePinCode || self.pairingType == DeviceServicePairingTypeMixed){
+//        _pairingAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+//        _pairingAlert.message = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request_Pin" value:@"Please enter the pin code" table:@"ConnectSDK"];
+//    }
+//    dispatch_on_main(^{ [_pairingAlert show]; });
+//}
 
--(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    if(alertView == _pairingAlert){
-        if (buttonIndex == 0){
-            [self disconnect];
-        }else
-            if((self.pairingType == DeviceServicePairingTypePinCode || self.pairingType == DeviceServicePairingTypeMixed) && buttonIndex == 1){
-                NSString *pairingCode = [alertView textFieldAtIndex:0].text;
-                [self sendPairingKey:pairingCode success:nil failure:nil];
-            }
-    }
-}
+//-(void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+//{
+//    if(alertView == _pairingAlert){
+//        if (buttonIndex == 0){
+//            [self disconnect];
+//        }else
+//            if((self.pairingType == DeviceServicePairingTypePinCode || self.pairingType == DeviceServicePairingTypeMixed) && buttonIndex == 1){
+//                NSString *pairingCode = [alertView textFieldAtIndex:0].text;
+//                [self sendPairingKey:pairingCode success:nil failure:nil];
+//            }
+//    }
+//}
 
--(void) showAlertWithTitle:(NSString *)title andMessage:(NSString *)message
-{
-    NSString *alertTitle = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Title" value:title table:@"ConnectSDK"];
-    NSString *alertMessage = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request" value:message table:@"ConnectSDK"];
-    NSString *ok = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_OK" value:@"OK" table:@"ConnectSDK"];
-    if(!_pinAlertView){
-        _pinAlertView = [[UIAlertView alloc] initWithTitle:alertTitle message:alertMessage delegate:self cancelButtonTitle:nil otherButtonTitles:ok, nil];
-    }
-    dispatch_on_main(^{ [_pinAlertView show]; });
-}
+//-(void) showAlertWithTitle:(NSString *)title andMessage:(NSString *)message
+//{
+//    NSString *alertTitle = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Title" value:title table:@"ConnectSDK"];
+//    NSString *alertMessage = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_Request" value:message table:@"ConnectSDK"];
+//    NSString *ok = [[NSBundle mainBundle] localizedStringForKey:@"Connect_SDK_Pair_OK" value:@"OK" table:@"ConnectSDK"];
+//    if(!_pinAlertView){
+//        _pinAlertView = [[UIAlertView alloc] initWithTitle:alertTitle message:alertMessage delegate:self cancelButtonTitle:nil otherButtonTitles:ok, nil];
+//    }
+//    dispatch_on_main(^{ [_pinAlertView show]; });
+//}
 
--(void)dismissPinAlertView{
-    if (_pinAlertView && _pinAlertView.isVisible){
-        [_pinAlertView dismissWithClickedButtonIndex:0 animated:NO];
-    }
-}
+//-(void)dismissPinAlertView{
+//    if (_pinAlertView && _pinAlertView.isVisible){
+//        [_pinAlertView dismissWithClickedButtonIndex:0 animated:NO];
+//    }
+//}
 
 #pragma mark - WebOSTVServiceSocketClientDelegate
 
 - (void) socketWillRegister:(WebOSTVServiceSocketClient *)socket
 {
-    _pairingTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(showAlert) userInfo:nil repeats:NO];
+//    _pairingTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(showAlert) userInfo:nil repeats:NO];
+    if ([self.delegate respondsToSelector:@selector(deviceService:pairingRequiredOfType:withData:)])
+        dispatch_on_main(^{ [self.delegate deviceService:self pairingRequiredOfType:DeviceServicePairingTypePinCode withData:nil]; });
 }
 
 - (void) socket:(WebOSTVServiceSocketClient *)socket registrationFailed:(NSError *)error
 {
-    if (_pairingAlert && _pairingAlert.isVisible)
-        dispatch_on_main(^{ [_pairingAlert dismissWithClickedButtonIndex:0 animated:NO]; });
+//    if (_pairingAlert && _pairingAlert.isVisible)
+//        dispatch_on_main(^{ [_pairingAlert dismissWithClickedButtonIndex:0 animated:NO]; });
 
     if (self.delegate && [self.delegate respondsToSelector:@selector(deviceService:pairingFailedWithError:)])
         dispatch_on_main(^{ [self.delegate deviceService:self pairingFailedWithError:error]; });
@@ -395,8 +397,8 @@
 {
     [_pairingTimer invalidate];
 
-    if (_pairingAlert && _pairingAlert.visible)
-        dispatch_on_main(^{ [_pairingAlert dismissWithClickedButtonIndex:1 animated:YES]; });
+//    if (_pairingAlert && _pairingAlert.visible)
+//        dispatch_on_main(^{ [_pairingAlert dismissWithClickedButtonIndex:1 animated:YES]; });
 
     if ([self.delegate respondsToSelector:@selector(deviceServicePairingSuccess:)])
         dispatch_on_main(^{ [self.delegate deviceServicePairingSuccess:self]; });
@@ -407,8 +409,8 @@
 
 - (void) socket:(WebOSTVServiceSocketClient *)socket didFailWithError:(NSError *)error
 {
-    if (_pairingAlert && _pairingAlert.visible)
-        dispatch_on_main(^{ [_pairingAlert dismissWithClickedButtonIndex:0 animated:YES]; });
+//    if (_pairingAlert && _pairingAlert.visible)
+//        dispatch_on_main(^{ [_pairingAlert dismissWithClickedButtonIndex:0 animated:YES]; });
 
     if ([self.delegate respondsToSelector:@selector(deviceService:didFailConnectWithError:)])
         dispatch_on_main(^{ [self.delegate deviceService:self didFailConnectWithError:error]; });
@@ -1688,12 +1690,12 @@
     command.callbackComplete = (^(NSDictionary *responseDic)
     {
         NSString *socket = [responseDic objectForKey:@"socketPath"];
-        _mouseSocket = [[WebOSTVServiceMouse alloc] initWithSocket:socket success:success failure:failure];
+        self->_mouseSocket = [[WebOSTVServiceMouse alloc] initWithSocket:socket success:success failure:failure];
     });
     command.callbackError = ^(NSError *error)
     {
-        _mouseInit = NO;
-        _mouseSocket = nil;
+        self->_mouseInit = NO;
+        self->_mouseSocket = nil;
 
         if (failure)
             failure(error);
@@ -1832,7 +1834,7 @@
         {
             launchSession = [LaunchSession launchSessionForAppId:webAppId];
             webAppSession = [[WebOSWebAppSession alloc] initWithLaunchSession:launchSession service:self];
-            _webAppSessions[webAppId] = webAppSession;
+            self->_webAppSessions[webAppId] = webAppSession;
         }
 
         launchSession.sessionType = LaunchSessionTypeWebApp;
@@ -2003,7 +2005,7 @@
         if (fullAppId)
         {
             if (webAppSession.launchSession.sessionType == LaunchSessionTypeWebApp)
-                _appToAppIdMappings[fullAppId] = appId;
+                self->_appToAppIdMappings[fullAppId] = appId;
 
             webAppSession.fullAppId = fullAppId;
         }
@@ -2021,75 +2023,75 @@
 }
 
 
-- (void) pinWebApp:(NSString *)webAppId success:(SuccessBlock)success failure:(FailureBlock)failure
-{
-    if (!webAppId || webAppId.length == 0)
-    {
-        if (failure)
-            failure([ConnectError generateErrorWithCode:ConnectStatusCodeArgumentError andDetails:@"You must provide a valid web app id"]);
-        
-        return;
-    }
-    
-    NSURL *URL = [NSURL URLWithString:@"ssap://webapp/pinWebApp"];
-    NSMutableDictionary *payload = [NSMutableDictionary new];
-    [payload setObject:webAppId forKey:@"webAppId"];
-     __weak typeof(self) weakSelf = self;
-    __block ServiceSubscription *subscription = [self.socket addSubscribe:URL payload:payload success:^(NSDictionary *responseDict)
-                                         {
-                                             if([responseDict valueForKey:@"pairingType"]){
-                                                [weakSelf showAlertWithTitle:@"Pin Web App" andMessage:@"Please confirm on your device"];
-                                                 
-                                             }
-                                             else
-                                             {
-                                                 [weakSelf dismissPinAlertView];
-                                                 [subscription unsubscribe];
-                                                 success(responseDict);
-                                             }
-                                             
-                                         }failure:^(NSError *error){
-                                             [weakSelf dismissPinAlertView];
-                                             [subscription unsubscribe];
-                                             failure(error);
-                                         }];
-}
+//- (void) pinWebApp:(NSString *)webAppId success:(SuccessBlock)success failure:(FailureBlock)failure
+//{
+//    if (!webAppId || webAppId.length == 0)
+//    {
+//        if (failure)
+//            failure([ConnectError generateErrorWithCode:ConnectStatusCodeArgumentError andDetails:@"You must provide a valid web app id"]);
+//        
+//        return;
+//    }
+//    
+//    NSURL *URL = [NSURL URLWithString:@"ssap://webapp/pinWebApp"];
+//    NSMutableDictionary *payload = [NSMutableDictionary new];
+//    [payload setObject:webAppId forKey:@"webAppId"];
+//     __weak typeof(self) weakSelf = self;
+//    __block ServiceSubscription *subscription = [self.socket addSubscribe:URL payload:payload success:^(NSDictionary *responseDict)
+//                                         {
+//                                             if([responseDict valueForKey:@"pairingType"]){
+//                                                [weakSelf showAlertWithTitle:@"Pin Web App" andMessage:@"Please confirm on your device"];
+//                                                 
+//                                             }
+//                                             else
+//                                             {
+//                                                 [weakSelf dismissPinAlertView];
+//                                                 [subscription unsubscribe];
+//                                                 success(responseDict);
+//                                             }
+//                                             
+//                                         }failure:^(NSError *error){
+//                                             [weakSelf dismissPinAlertView];
+//                                             [subscription unsubscribe];
+//                                             failure(error);
+//                                         }];
+//}
 
-- (void)unPinWebApp:(NSString *)webAppId success:(SuccessBlock)success failure:(FailureBlock)failure
-{
-    if (!webAppId || webAppId.length == 0)
-    {
-        if (failure)
-            failure([ConnectError generateErrorWithCode:ConnectStatusCodeArgumentError andDetails:@"You must provide a valid web app id"]);
-        
-        return;
-    }
-    
-    NSURL *URL = [NSURL URLWithString:@"ssap://webapp/removePinnedWebApp"];
-    NSMutableDictionary *payload = [NSMutableDictionary new];
-    [payload setObject:webAppId forKey:@"webAppId"];
-    
-    __weak typeof(self) weakSelf = self;
-    __block ServiceSubscription *subscription = [self.socket addSubscribe:URL payload:payload success:^(NSDictionary *responseDict)
-                                         {
-                                             if([responseDict valueForKey:@"pairingType"]){
-                                                [weakSelf showAlertWithTitle:@"Un Pin Web App" andMessage:@"Please confirm on your device"];
-                                                
-                                             }
-                                             else
-                                             {
-                                                 [weakSelf dismissPinAlertView];
-                                                 [subscription unsubscribe];
-                                                  success(responseDict);
-                                             }
-                                             
-                                             
-                                         }failure:^(NSError *error){
-                                             [weakSelf dismissPinAlertView];
-                                             [subscription unsubscribe];
-                                             failure(error);
-                                         }];
-}
+//- (void)unPinWebApp:(NSString *)webAppId success:(SuccessBlock)success failure:(FailureBlock)failure
+//{
+//    if (!webAppId || webAppId.length == 0)
+//    {
+//        if (failure)
+//            failure([ConnectError generateErrorWithCode:ConnectStatusCodeArgumentError andDetails:@"You must provide a valid web app id"]);
+//        
+//        return;
+//    }
+//    
+//    NSURL *URL = [NSURL URLWithString:@"ssap://webapp/removePinnedWebApp"];
+//    NSMutableDictionary *payload = [NSMutableDictionary new];
+//    [payload setObject:webAppId forKey:@"webAppId"];
+//    
+//    __weak typeof(self) weakSelf = self;
+//    __block ServiceSubscription *subscription = [self.socket addSubscribe:URL payload:payload success:^(NSDictionary *responseDict)
+//                                         {
+//                                             if([responseDict valueForKey:@"pairingType"]){
+//                                                [weakSelf showAlertWithTitle:@"Un Pin Web App" andMessage:@"Please confirm on your device"];
+//                                                
+//                                             }
+//                                             else
+//                                             {
+//                                                 [weakSelf dismissPinAlertView];
+//                                                 [subscription unsubscribe];
+//                                                  success(responseDict);
+//                                             }
+//                                             
+//                                             
+//                                         }failure:^(NSError *error){
+//                                             [weakSelf dismissPinAlertView];
+//                                             [subscription unsubscribe];
+//                                             failure(error);
+//                                         }];
+//}
 
 - (void)isWebAppPinned:(NSString *)webAppId success:(WebAppPinStatusBlock)success failure:(FailureBlock)failure
 {
@@ -2135,7 +2137,6 @@
 }
 
 - (void)sendPairingKey:(NSString *)pairingKey success:(SuccessBlock)success failure:(FailureBlock)failure {
-   
     NSURL *URL = [NSURL URLWithString:@"ssap://pairing/setPin"];
     NSMutableDictionary *payload = [NSMutableDictionary new];
     [payload setObject:pairingKey forKey:@"pin"];
