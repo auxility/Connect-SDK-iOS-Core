@@ -23,6 +23,7 @@
 #import "CTXMLReader.h"
 #import "DeviceServiceReachability.h"
 #import "CTGuid.h"
+#import "Logger/Logger-Swift.h"
 
 #import "NSObject+FeatureNotSupported_Private.h"
 
@@ -204,7 +205,7 @@ static NSMutableArray *registeredApps = nil;
             [request addValue:@"text/plain;charset=\"utf-8\"" forHTTPHeaderField:@"Content-Type"];
             [request setHTTPBody:payloadData];
 
-            DLog(@"[OUT] : %@ \n %@", [request allHTTPHeaderFields], payload);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"[OUT] : %@ \n %@", [request allHTTPHeaderFields], payload]];
         } else
         {
             [request addValue:@"0" forHTTPHeaderField:@"Content-Length"];
@@ -214,14 +215,14 @@ static NSMutableArray *registeredApps = nil;
         [request setHTTPMethod:command.HTTPMethod];
         [request addValue:@"0" forHTTPHeaderField:@"Content-Length"];
 
-        DLog(@"[OUT] : %@", [request allHTTPHeaderFields]);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"[OUT] : %@", [request allHTTPHeaderFields]]];
     }
 
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
     {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
 
-        DLog(@"[IN] : %@", [httpResponse allHeaderFields]);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"[IN] : %@", [httpResponse allHeaderFields]]];
 
         if (connectionError)
         {
@@ -274,7 +275,7 @@ static NSMutableArray *registeredApps = nil;
                 NSError *xmlError;
                 NSDictionary *responseXML = [CTXMLReader dictionaryForXMLData:data error:&xmlError];
 
-                DLog(@"[IN] : %@", responseXML);
+                [[LoggerManager instance] log: [NSString stringWithFormat: @"[IN] : %@", responseXML]];
 
                 if (xmlError)
                 {

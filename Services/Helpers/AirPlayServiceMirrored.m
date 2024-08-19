@@ -25,6 +25,7 @@
 #import "AirPlayWebAppSession.h"
 #import "ConnectUtil.h"
 #import "AirPlayService.h"
+#import "Logger/Logger-Swift.h"
 
 #import "NSObject+FeatureNotSupported_Private.h"
 
@@ -213,13 +214,13 @@
         _secondWindow = [[AirPlayServiceWindow alloc] initWithFrame:screenBounds];
         _secondWindow.screen = secondScreen;
 
-        DLog(@"Displaying content with bounds %@", NSStringFromCGRect(screenBounds));
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"Displaying content with bounds %@", NSStringFromCGRect(screenBounds)]];
     }
 }
 
 - (void) hScreenConnected:(NSNotification *)notification
 {
-    DLog(@"%@", notification);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@", notification]];
 
     if (!self.secondWindow)
         [self checkForExistingScreenAndInitializeIfPresent];
@@ -229,7 +230,7 @@
 
 - (void) hScreenDisconnected:(NSNotification *)notification
 {
-    DLog(@"%@", notification);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@", notification]];
 
     if (_connecting || _connected)
         [self disconnect];
@@ -314,7 +315,7 @@
         }
     }
 
-    DLog(@"Created a web view with bounds %@", NSStringFromCGRect(self.secondWindow.bounds));
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"Created a web view with bounds %@", NSStringFromCGRect(self.secondWindow.bounds)]];
 
     WKProcessPool *commonProcessPool = [[WKProcessPool alloc] init];
     WKWebViewConfiguration *webViewConfig = [[WKWebViewConfiguration alloc] init];
@@ -465,7 +466,7 @@
 
 - (void)webView:(WKWebView *)webView didFailLoadWithError:(NSError *)error
 {
-    DLog(@"%@", error.localizedDescription);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@", error.localizedDescription]];
 
     if (self.launchFailureBlock)
         self.launchFailureBlock(error);
@@ -489,7 +490,7 @@
         if (jsonError || !messageObject)
             messageObject = jsonString;
 
-        DLog(@"Got p2p message from web app:\n%@", messageObject);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"Got p2p message from web app:\n%@", messageObject]];
 
         if (self.activeWebAppSession)
         {
@@ -515,7 +516,7 @@
 
 - (void)webViewDidFinishLoad:(WKWebView *)webView
 {
-    DLog(@"%@", webView.request.URL.absoluteString);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@", webView.URL.absoluteString]];
 
     if (self.launchSuccessBlock)
         self.launchSuccessBlock(nil);
@@ -526,7 +527,7 @@
 
 - (void)webViewDidStartLoad:(WKWebView *)webView
 {
-    DLog(@"%@", webView.request.URL.absoluteString);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@", webView.URL.absoluteString]];
 }
 
 @end

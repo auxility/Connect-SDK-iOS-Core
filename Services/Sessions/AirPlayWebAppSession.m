@@ -22,6 +22,7 @@
 #import "ConnectError.h"
 #import "ConnectUtil.h"
 #import "MediaLaunchObject.h"
+#import "Logger/Logger-Swift.h"
 
 #import "NSObject+FeatureNotSupported_Private.h"
 
@@ -218,7 +219,7 @@
     NSString *commandString = [NSString stringWithFormat:@"window.connectManager.handleMessage({from: -1, message: \"%@\" })", message];
 
     [self.service.mirroredService.webAppWebView evaluateJavaScript:commandString completionHandler:^(NSString *result, NSError *error) {
-        NSLog(@"evaluate Completed");
+        [[LoggerManager instance] log: @"evaluate Completed"];
     }];
     if (success)
         success(nil);
@@ -244,7 +245,7 @@
         NSString *messageString = [[NSString alloc] initWithData:messageData encoding:NSUTF8StringEncoding];
         NSString *commandString = [NSString stringWithFormat:@"window.connectManager.handleMessage({from: -1, message: %@ })", messageString];
         [self.service.mirroredService.webAppWebView evaluateJavaScript:commandString completionHandler:^(NSString *result, NSError *error) {
-            NSLog(@"evaluate Completed");
+            [[LoggerManager instance] log: @"evaluate Completed"];
         }];
 
         if (success)

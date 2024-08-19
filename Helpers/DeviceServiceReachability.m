@@ -16,7 +16,7 @@
 //
 
 #import "DeviceServiceReachability.h"
-
+#import "Logger/Logger-Swift.h"
 
 @implementation DeviceServiceReachability
 {
@@ -78,7 +78,7 @@
             return;
 
         if (connectionError) {
-            DLog(@"Connection error to %@: %@", self.targetURL, connectionError);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"Connection error to %@: %@", self.targetURL, connectionError]];
         }
 
         const BOOL noDataIsAvailable = !data && connectionError && !response;

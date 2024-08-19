@@ -21,6 +21,7 @@
 #import "WebOSTVServiceSocketClient.h"
 #import "WebOSTVService.h"
 #import "ConnectError.h"
+#import "Logger/Logger-Swift.h"
 
 #define kDeviceServicePairingTypeFirstScreen @"PROMPT"
 #define kDeviceServicePairingTypePinCode @"PIN"
@@ -274,7 +275,7 @@
 
     NSString *sendString = [self writeToJSON:sendData];
 
-    DLog(@"[OUT] : %@", sendString);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"[OUT] : %@", sendString]];
 
     [_socket send:sendString];
 
@@ -313,7 +314,7 @@
         {
             [_commandQueue enumerateObjectsUsingBlock:^(NSString *sendString, NSUInteger idx, BOOL *stop)
                     {
-                        DLog(@"[OUT] : %@", sendString);
+                        [[LoggerManager instance] log: [NSString stringWithFormat: @"[OUT] : %@", sendString]];
 
                         [_socket send:sendString];
                     }];
@@ -343,7 +344,7 @@
 
     NSString *sendString = [self encodeData:registerInfo andAddress:nil withId:dataId];
 
-    DLog(@"[OUT] : %@", sendString);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"[OUT] : %@", sendString]];
 
     [_socket send:sendString];
 
@@ -469,7 +470,7 @@
 {
     NSDictionary *decodeData = [self decodeData:message];
 
-    DLog(@"[IN] : %@", decodeData);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"[IN] : %@", decodeData]];
 
     if (self.delegate && [self.delegate respondsToSelector:@selector(socket:didReceiveMessage:)])
     {
@@ -675,7 +676,7 @@
 
     if (_socket.readyState == LGSR_OPEN)
     {
-        DLog(@"[OUT] : %@", payload);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"[OUT] : %@", payload]];
 
         [_socket send:payload];
 

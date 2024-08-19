@@ -26,6 +26,7 @@
 #import "DeviceServiceReachability.h"
 #import "CTGuid.h"
 #import "GCDWebServer.h"
+#import "Logger/Logger-Swift.h"
 
 #import "CTASIHTTPRequest.h"
 
@@ -172,12 +173,12 @@
             [request addRequestHeader: @"Content-Length" value:@"0"];
         }
 
-        DLog(@"[OUT] : %@ \n %@", request.requestHeaders, payload);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"[OUT] : %@ \n %@", request.requestHeaders, payload]];
     } else
     {
         [request addRequestHeader: @"Content-Length" value:@"0"];
 
-        DLog(@"[OUT] : %@", request.requestHeaders);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"[OUT] : %@", request.requestHeaders]];
     }
 
     [request setRequestMethod:command.HTTPMethod];

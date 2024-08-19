@@ -22,6 +22,7 @@
 #import "ServiceDescription.h"
 #import "CommonMacros.h"
 #include <arpa/inet.h>
+#include "Logger/Logger-Swift.h"
 
 
 @interface ZeroConfDiscoveryProvider ()
@@ -38,7 +39,7 @@
 
 - (void) startDiscovery
 {
-    NSLog(@"ZeroConfDiscoveryProvider startDiscovery");
+    [[LoggerManager instance] log:@"ZeroConfDiscoveryProvider startDiscovery"];
     
     if (self.isRunning)
         return;
@@ -63,7 +64,7 @@
 
 - (void) stopDiscovery
 {
-    NSLog(@"ZeroConfDiscoveryProvider stopDiscovery");
+    [[LoggerManager instance] log:@"ZeroConfDiscoveryProvider stopDiscovery"];
     
     if (!self.isRunning)
         return;
@@ -85,13 +86,13 @@
 
 - (void) searchForServices
 {
-    NSLog(@"ZeroConfDiscoveryProvider searchForServices");
+    [[LoggerManager instance] log: @"ZeroConfDiscoveryProvider searchForServices"];
     
     [_serviceFilters enumerateObjectsUsingBlock:^(NSDictionary *serviceFilter, NSUInteger idx, BOOL *stop)
     {
         NSString *filterType = serviceFilter[@"zeroconf"][@"filter"];
 
-        NSLog(@"ZeroConfDiscoveryProvider searchForServices filterType = %@", filterType);
+        [[LoggerManager instance] log: [NSString stringWithFormat:@"ZeroConfDiscoveryProvider searchForServices filterType = %@", filterType]];
         
         if (filterType)
             [_netServiceBrowser searchForServicesOfType:filterType inDomain:@"local."];
@@ -141,12 +142,12 @@
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
-    NSLog(@"ZeroConfDiscoveryProvider %@", @"netServiceBrowser 1");
+    [[LoggerManager instance] log:@"ZeroConfDiscoveryProvider netServiceBrowser 1"];
     
     if ([_resolvingDevices objectForKey:aNetService.name] || [_discoveredDevices objectForKey:aNetService.name])
         return;
 
-    DLog(@"%@ : %@", aNetService.name, aNetService.domain);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@ : %@", aNetService.name, aNetService.domain]];
 
     [aNetService setDelegate:self];
     [aNetService resolveWithTimeout:5.0];
@@ -158,12 +159,12 @@
 
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
-    NSLog(@"ZeroConfDiscoveryProvider %@", @"netServiceBrowser 2");
+    [[LoggerManager instance] log:@"ZeroConfDiscoveryProvider netServiceBrowser 2"];
     
     if (![_discoveredDevices objectForKey:aNetService.name])
         return;
 
-    DLog(@"%@", aNetService.name);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@", aNetService.name]];
 
     ServiceDescription *serviceDescription = _discoveredDevices[aNetService.name];
 
@@ -229,7 +230,7 @@
 
 - (void) netServiceDidResolveAddress:(NSNetService *)sender
 {
-    NSLog(@"ZeroConfDiscoveryProvider %@", [NSString stringWithFormat: @"%@, %@", @"sender.name = ", sender.name]);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"ZeroConfDiscoveryProvider %@", [NSString stringWithFormat: @"%@, %@", @"sender.name = ", sender.name]]];
     
     sender.delegate = nil;
     [_resolvingDevices removeObjectForKey:sender.name];
@@ -237,7 +238,7 @@
     // according to Apple's docs, it is possible to have a service resolve with no addresses
     if (!sender.addresses || sender.addresses.count == 0)
     {
-        DLog(@"%@ resolved with 0 addresses, bailing ...", sender.name);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"%@ resolved with 0 addresses, bailing ...", sender.name]];
         return;
     }
 
@@ -248,14 +249,13 @@
         if ((foundIPv4Address = [self parseAddressData:addressData
                                          intoIPAddress:&address
                                                andPort:&port])) {
-            DLog(@"%@: resolved %@:%d", sender.name, address, port);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"%@: resolved %@:%d", sender.name, address, port]];
             *stop = YES;
         }
     }];
 
     if (!foundIPv4Address) {
-        DLog(@"%@: couldn't find resolved IPv4 addresses (%ld total)",
-             sender.name, (unsigned long)sender.addresses.count);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"%@: couldn't find resolved IPv4 addresses (%ld total)", sender.name, (unsigned long) sender.addresses.count]];
         return;
     }
 
@@ -295,12 +295,12 @@
 
 - (void) netService:(NSNetService *)sender didUpdateTXTRecordData:(NSData *)data
 {
-    DLog(@"%@", sender.name);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@", sender.name]];
 }
 
 - (void) netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
 {
-    DLog(@"%@ : %@", sender.name, errorDict);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@ : %@", sender.name, errorDict]];
 
     [_resolvingDevices removeObjectForKey:sender.name];
 }

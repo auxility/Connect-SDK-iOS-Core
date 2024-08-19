@@ -19,6 +19,7 @@
 //
 
 #import "DefaultConnectableDeviceStore.h"
+#import "Logger/Logger-Swift.h"
 
 
 @implementation DefaultConnectableDeviceStore
@@ -76,7 +77,7 @@
 
         if (error)
         {
-            DLog(@"Experienced error loading file: %@", error.localizedDescription);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"Experienced error loading file: %@", error.localizedDescription]];
             return;
         }
 
@@ -89,7 +90,7 @@
 
         if (error)
         {
-            DLog(@"Experienced error parsing file: %@", error.localizedDescription);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"Experienced error parsing file: %@", error.localizedDescription]];
             return;
         }
 
@@ -369,7 +370,7 @@
         
         if (jsonError)
         {
-            DLog(@"Failed to parse with error: %@", jsonError.localizedDescription);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"Failed to parse with error: %@", jsonError.localizedDescription]];
             _waitToWrite = NO;
             return;
         }
@@ -379,7 +380,7 @@
 
         if (writeError)
         {
-            DLog(@"Failed to write with error: %@", writeError.localizedDescription);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"Failed to write with error: %@", writeError.localizedDescription]];
             _waitToWrite = NO;
             return;
         }

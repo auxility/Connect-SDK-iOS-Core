@@ -26,6 +26,7 @@
 #import "TextInputControl.h"
 #import "CTGuid.h"
 #import "DiscoveryManager.h"
+#import "Logger/Logger-Swift.h"
 
 @implementation ConnectableDevice
 {
@@ -307,11 +308,11 @@
             if (existingService.connected)
                 [existingService disconnect];
 
-            DLog(@"Removing %@ (%@)", existingService.serviceDescription.friendlyName, existingService.serviceName);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"Removing %@ (%@)", existingService.serviceDescription.friendlyName, existingService.serviceName]];
             [self removeServiceWithId:existingService.serviceName];
         } else
         {
-            DLog(@"Ignoring %@ (%@)", service.serviceDescription.friendlyName, service.serviceName);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"Ignoring %@ (%@)", service.serviceDescription.friendlyName, service.serviceName]];
             return;
         }
     }

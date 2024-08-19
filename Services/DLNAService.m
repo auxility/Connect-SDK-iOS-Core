@@ -30,6 +30,7 @@
 #import "NSString+Common.h"
 #import "XMLWriter+ConvenienceMethods.h"
 #import "SubtitleInfo.h"
+#import "Logger/Logger-Swift.h"
 
 NSString *const kDataFieldName = @"XMLData";
 #define kActionFieldName @"SOAPAction"
@@ -276,8 +277,7 @@ static const NSInteger kValueNotFound = -1;
     } else if ([channelsObject isKindOfClass:[NSDictionary class]]) {
         channels = [NSArray arrayWithObject:channelsObject];
     } else {
-        DLog(@"Unexpected contents for volume notification (%@ object)",
-             NSStringFromClass([channelsObject class]));
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"Unexpected contents for volume notification (%@ object)", NSStringFromClass([channelsObject class])]];
     }
 
     [channels enumerateObjectsUsingBlock:^(NSDictionary *channel, NSUInteger idx, BOOL *stop) {
@@ -309,14 +309,14 @@ static const NSInteger kValueNotFound = -1;
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:xmlData];
 
-    DLog(@"[OUT] : %@ \n %@", [request allHTTPHeaderFields], xml);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"[OUT] : %@ \n %@", [request allHTTPHeaderFields], xml]];
 
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
     {
         NSError *xmlError;
         NSDictionary *dataXML = [CTXMLReader dictionaryForXMLData:data error:&xmlError];
 
-        DLog(@"[IN] : %@ \n %@", [((NSHTTPURLResponse *)response) allHeaderFields], dataXML);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"[IN] : %@ \n %@", [((NSHTTPURLResponse *)response) allHeaderFields], dataXML]];
 
         if (connectionError)
         {

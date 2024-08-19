@@ -101,6 +101,7 @@
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <netdb.h>
+#import "Logger/Logger-Swift.h"
 
 #import <CoreFoundation/CoreFoundation.h>
 
@@ -149,7 +150,7 @@ static NSString *reachabilityFlags_(SCNetworkReachabilityFlags flags) {
 
 static void logReachabilityFlags_(const char *name, int line, SCNetworkReachabilityFlags flags) {
 	
-    NSLog(@"%s (%d) \n\t%@", name, line, reachabilityFlags_(flags));
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%s (%d) \n\t%@", name, line, reachabilityFlags_(flags)]];
 	
 } // logReachabilityFlags_()
 
@@ -171,7 +172,7 @@ static void logNetworkStatus_(const char *name, int line, CTNetworkStatus status
 			break;
 	}
 	
-	NSLog(@"%s (%d) \n\tNetwork Status: %@", name, line, statusString);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%s (%d) \n\tNetwork Status: %@", name, line, statusString]];
 	
 } // logNetworkStatus_()
 

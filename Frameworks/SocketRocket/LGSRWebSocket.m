@@ -34,6 +34,7 @@
 
 #import <CommonCrypto/CommonDigest.h>
 #import <Security/SecRandom.h>
+#import "Logger/Logger-Swift.h"
 
 #if OS_OBJECT_USE_OBJC_RETAIN_RELEASE
 #define lgsr_dispatch_retain(x)
@@ -1447,7 +1448,7 @@ static const size_t LGSRFrameHeaderOverhead = 32;
                 NSString *certString = CFBridgingRelease(SecCertificateCopySubjectSummary((cert)));
               
                 //NSString *convString = [trustedCertData base64EncodedStringWithOptions:0];
-                //NSLog(@"CERT>>>%@",convString);
+                //[[LoggerManager instance] log: [NSString stringWithFormat: @"CERT>>>%@", convString]];
                 
                 ///////////************** handle CA Certificates changes ******
                 
@@ -1719,7 +1720,7 @@ static const size_t LGSRFrameHeaderOverhead = 32;
         }];
         
         if (!_pinnedCertFound || (certs && (_icertificateValidity== -1 || _ipublicKeyvalue== -1))) {
-            NSLog(@"*************TV CERTIFICATE FAILURE ****************");
+            [[LoggerManager instance] log: @"*************TV CERTIFICATE FAILURE ****************"];
             dispatch_async(_workQueue, ^{
                 [weakSelf _failWithError:[NSError errorWithDomain:@"org.lolrus.SocketRocket" code:23556 userInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Invalid server cert"] forKey:NSLocalizedDescriptionKey]]];
             });
@@ -2042,7 +2043,7 @@ static inline void LGSRFastLog(NSString *format, ...)  {
     
     va_end(arg_list);
     
-    DLog(@"[LGSR] %@", formattedString);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"[LGSR] %@", formattedString]];
 #endif
 }
 

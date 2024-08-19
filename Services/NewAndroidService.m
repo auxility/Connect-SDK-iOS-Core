@@ -1,4 +1,5 @@
 #import "NewAndroidService_Private.h"
+#import "Logger/Logger-Swift.h"
 
 @interface NewAndroidService ()
 
@@ -9,7 +10,7 @@
 
 + (NSDictionary *) discoveryParameters
 {
-    NSLog(@"NewAndroidService discoveryParameters");
+    [[LoggerManager instance] log: @"NewAndroidService discoveryParameters"];
     return @{
         @"serviceId" : kConnectSDKNewAndroidServiceId,
         @"zeroconf" : @{

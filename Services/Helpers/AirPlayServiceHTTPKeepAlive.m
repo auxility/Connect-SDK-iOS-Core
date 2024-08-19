@@ -19,6 +19,7 @@
 //
 
 #import "AirPlayServiceHTTPKeepAlive.h"
+#import "Logger/Logger-Swift.h"
 
 #import "ServiceCommand.h"
 
@@ -63,7 +64,7 @@
 - (void)startTimer {
     [self stopTimer];
 
-    DLog(@"Starting keep-alive timer");
+    [[LoggerManager instance] log: @"Starting keep-alive timer"];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:self.interval
                                                   target:self
                                                 selector:@selector(sendKeepAlive:)
@@ -73,7 +74,7 @@
 
 - (void)stopTimer {
     if (self.timer) {
-        DLog(@"Stopping keep-alive timer");
+        [[LoggerManager instance] log: @"Stopping keep-alive timer"];
         [self.timer invalidate];
         self.timer = nil;
     }
@@ -82,7 +83,7 @@
 #pragma mark - Private Methods
 
 - (void)sendKeepAlive:(NSTimer *)timer {
-    DLog(@"Sending keep-alive request");
+    [[LoggerManager instance] log: @"Sending keep-alive request"];
     NSParameterAssert(self.commandURL);
 
     // the "/0" resource is unlikely to change to return something, as opposed
@@ -93,10 +94,10 @@
                                                                    payload:nil];
     keepAliveCommand.HTTPMethod = @"GET";
     keepAliveCommand.callbackComplete = ^(id obj) {
-        DLog(@"%@: keep-alive success %@", NSStringFromClass(self.class), obj);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"%@: keep-alive success %@", NSStringFromClass(self.class), obj]];
     };
     keepAliveCommand.callbackError = ^(NSError *error) {
-        DLog(@"%@: keep-alive error %@", NSStringFromClass(self.class), error);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"%@: keep-alive error %@", NSStringFromClass(self.class), error]];
     };
     [keepAliveCommand send];
 }

@@ -21,6 +21,7 @@
 #import "DevicePicker.h"
 #import "DiscoveryProvider.h"
 #import "DiscoveryManager.h"
+#import "Logger/Logger-Swift.h"
 
 @implementation DevicePicker
 {
@@ -132,7 +133,7 @@
         [_popover presentPopoverFromRect:sourceRect inView:targetView permittedArrowDirections:permittedArrowDirections animated:self.shouldAnimatePicker];
     } else
     {
-        DLog(@"Sender should be a subclass of either UIBarButtonItem or UIView");
+        [[LoggerManager instance] log: @"Sender should be a subclass of either UIBarButtonItem or UIView"];
         
         [self cleanupViews];
     }
@@ -316,7 +317,7 @@
 
     if (!deviceExists)
     {
-        DLog(@"User selected a device that no longer exists");
+        [[LoggerManager instance] log: @"User selected a device that no longer exists"];
         return;
     }
 

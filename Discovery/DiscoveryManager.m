@@ -34,6 +34,7 @@
 #import "ServiceConfig.h"
 #import "ServiceConfigDelegate.h"
 #import "CapabilityFilter.h"
+#import "Logger/Logger-Swift.h"
 
 #import "AppStateChangeNotifier.h"
 
@@ -141,6 +142,8 @@
 
 - (void) registerDefaultServices
 {
+    [[LoggerManager instance] log:@"This is a log message from Objective-C"];
+
     NSDictionary *defaultPlatforms = kConnectSDKDefaultPlatforms;
     
     [defaultPlatforms enumerateKeysAndObjectsUsingBlock:^(NSString *platformClassName, NSString *discoveryProviderClassName, BOOL *stop) {
@@ -517,7 +520,7 @@
 
 - (void)discoveryProvider:(DiscoveryProvider *)provider didFindService:(ServiceDescription *)description
 {
-    DLog(@"%@ (%@)", description.friendlyName, description.serviceId);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@ (%@)", description.friendlyName, description.serviceId]];
 
     BOOL deviceIsNew = [_allDevices objectForKey:description.address] == nil;
     ConnectableDevice *device;
@@ -567,7 +570,7 @@
 
 - (void)discoveryProvider:(DiscoveryProvider *)provider didLoseService:(ServiceDescription *)description
 {
-    DLog(@"%@ (%@)", description.friendlyName, description.serviceId);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@ (%@)", description.friendlyName, description.serviceId]];
     
     ConnectableDevice *device;
 
@@ -577,12 +580,12 @@
     {
         [device removeServiceWithId:description.serviceId];
 
-        DLog(@"Removed service from device at address %@. Device has %lu services left",
-             description.address, (unsigned long)device.services.count);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"Removed service from device at address %@. Device has %lu services left",
+             description.address, (unsigned long)device.services.count]];
 
         if (![device hasServices])
         {
-            DLog(@"Device at address %@ has been orphaned (has no services)", description.address);
+            [[LoggerManager instance] log: [NSString stringWithFormat: @"Device at address %@ has been orphaned (has no services)", description.address]];
 
             @synchronized (_allDevices) { [_allDevices removeObjectForKey:description.address]; }
             @synchronized (_compatibleDevices) { [_compatibleDevices removeObjectForKey:description.address]; }
@@ -597,7 +600,7 @@
 
 - (void)discoveryProvider:(DiscoveryProvider *)provider didFailWithError:(NSError *)error
 {
-    DLog(@"%@", error.localizedDescription);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"%@", error.localizedDescription]];
 }
 
 #pragma mark - Helper methods

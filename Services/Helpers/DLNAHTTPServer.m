@@ -26,6 +26,7 @@
 #import "GCDWebServerDataRequest.h"
 #import "GCDWebServerHTTPStatusCodes.h"
 #import "ConnectUtil.h"
+#import "Logger/Logger-Swift.h"
 
 
 @implementation DLNAHTTPServer
@@ -166,7 +167,7 @@
 
     if (xmlParseError)
     {
-        DLog(@"XML Parse error %@", xmlParseError.description);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"XML Parse error %@", xmlParseError.description]];
         return;
     }
 
@@ -174,7 +175,7 @@
 
     if (!eventXMLStringEncoded)
     {
-        DLog(@"Received event with no LastChange data, ignoring...");
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"Received event with no LastChange data, ignoring..."]];
         return;
     }
 
@@ -184,7 +185,7 @@
 
     if (eventXMLParseError)
     {
-        DLog(@"Could not parse event into usable format, ignoring… (%@)", eventXMLParseError);
+        [[LoggerManager instance] log: [NSString stringWithFormat: @"Could not parse event into usable format, ignoring… (%@)", eventXMLParseError]];
         return;
     }
 
@@ -193,7 +194,7 @@
 
 - (void) handleEvent:(NSDictionary *)eventInfo forSubscriptions:(NSArray *)subscriptions
 {
-    DLog(@"eventInfo: %@", eventInfo);
+    [[LoggerManager instance] log: [NSString stringWithFormat: @"eventInfo: %@", eventInfo]];
 
     [subscriptions enumerateObjectsUsingBlock:^(ServiceSubscription *subscription, NSUInteger subIdx, BOOL *subStop) {
         [subscription.successCalls enumerateObjectsUsingBlock:^(SuccessBlock success, NSUInteger successIdx, BOOL *successStop) {
