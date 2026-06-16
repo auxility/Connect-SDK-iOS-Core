@@ -97,7 +97,10 @@
 
 #import <sys/socket.h>
 #import <netinet/in.h>
-#import <netinet6/in6.h>
+// netinet6/in6.h is a private system header already provided transitively by
+// <netinet/in.h>. Importing it directly trips Xcode 16+/26 module privacy
+// checks ("Use of private header from outside its module"). Removed as Apple
+// did in its own Reachability sample.
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <netdb.h>
